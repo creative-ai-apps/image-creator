@@ -1,15 +1,8 @@
-import { Text, View } from "react-native";
+import { Redirect } from "expo-router";
 
-export default function Index() {
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-    </View>
-  );
+// Root index redirects to the auth group entry point.
+// The RootGuard in _layout.tsx will handle further redirection
+// based on authentication state (auth → welcome, logged in → main tabs).
+export default function RootIndex() {
+  return <Redirect href="/(auth)" />;
 }

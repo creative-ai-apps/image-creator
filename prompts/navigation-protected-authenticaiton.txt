@@ -1,0 +1,31 @@
+
+Sen uzman bir React Native ve Expo geliştiricisisin. Benim için bir "AI Görsel Oluşturma" mobil uygulaması iskeleti kurmanı istiyorum. Uygulama kodları içeriğinin dili tamamen "İngilizce" olsun.Lütfen projeyi oluştururken sadece aşağıdaki 3 kurala kesinlikle uyarak kodlama yap:
+
+1. Uygulamanın Temel Navigasyon Yapısı
+Expo Router kullanarak aşağıdaki ekran akışını oluşturmalısın:
+
+#Auth (Kimlik Doğrulama) Akışı : 
+
+*Başlangıç Ekranı: Uygulamanın ilk açılış ekranı olmalıdır. Bu ekranda "Giriş Yap" ve "Keşfet" seçeneklerine gidilebilmelidir.
+
+*Giriş/Kaydol Ekranı: Kullanıcının uygulamaya erişim sağlaması için giriş yaptığı sayfadır.
+
+*Misafir Keşfet Ekranı: Giriş yapmadan erişilebilen "Keşfet" sayfasıdır.
+
+#Ana Navigasyon (Bottom Tab Akışı): Kullanıcı başarılı bir şekilde giriş yaptıktan sonra 4 sekmeden oluşan bir tab navigasyona yönlendirilmelidir:
+
+*Görsel Oluşturma: Uygulamanın temel işlev sayfası.
+
+*Kütüphane: Kişisel galeri ekranı.
+
+*Keşfet: Diğer kullanıcıların public görsellerini inceleme alanı.
+
+*Hesap: Kişisel bilgilerin bulunduğu ekran.
+
+*İç Yönlendirmeler: "Hesap" ekranı içerisinden gidilebilecek bir "Kredi Satın Alma" ekranı bulunmalıdır.
+
+2. Protected Authentication (Korumalı Kimlik Doğrulama) Yapısı
+Giriş/hesap oluşturma alanı (Auth Stack) ile ana uygulama alanı (Bottom Tab Stack) birbirinden tamamen ayrı olmalıdır. Sisteme sahte (mock) bir authentication state ekle. Eğer kullanıcı giriş yapmamışsa (logged out) sadece Auth Stack gösterilmeli; kullanıcı giriş yapmışsa (logged in) sadece Main Bottom Tab alanı gösterilmelidir.
+
+3. Ekranların Boş Bırakılması
+Yukarıda adı geçen tüm sayfalar (Başlangıç, Giriş/Kaydol, Misafir Keşfet, Görsel Oluşturma, Kütüphane, Ana Keşfet, Hesap, Kredi Satın Alma) işlevsel bileşenler (functional components) olarak oluşturulmalıdır ancak içleri boş olmalıdır. Her sayfa sadece ekranı ortalayacak şekilde kendi adını belirten bir metin (örneğin: <Text>Görsel Oluşturma Ekranı</Text>) ve gerekli navigasyon butonlarını içermelidir. Hiçbir ekstra tasarım veya fonksiyon ekleme.
