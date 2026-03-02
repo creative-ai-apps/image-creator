@@ -1,5 +1,6 @@
 Video ve dökümanlar : https://drive.google.com/drive/folders/13fOEPatCPlU8-akd5LmqtVNgqMpdDMET?usp=sharing
---------------------------------
+
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
