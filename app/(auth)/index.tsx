@@ -8,7 +8,7 @@ export default function WelcomeScreen() {
         <View style={styles.container}>
             <Text>Welcome Screen</Text>
             <Button title="Login" onPress={() => router.push("/(auth)/login")} />
-            <Button title="Explore as Guest" onPress={() => router.push("/(auth)/guest-explore")} />
+            <Button title="Explore as Guest" onPress={() => router.push("/(guest)/explore")} />
         </View>
     );
 }
