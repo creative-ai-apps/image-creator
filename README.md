@@ -1,4 +1,4 @@
-Video ve dökümanlar : https://drive.google.com/drive/folders/13fOEPatCPlU8-akd5LmqtVNgqMpdDMET?usp=sharing
+Video ve dökümanlar : https://drive.google.com/drive/folders/1E9N-UGLwtdL1I6HbALMdtyu8vkoancBQ?usp=sharing
 
 
 # Welcome to your Expo app 👋
