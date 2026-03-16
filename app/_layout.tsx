@@ -1,4 +1,5 @@
 import { AuthProvider, useAuth } from "@/context/AuthContext";
+import { StatusBar } from "expo-status-bar";
 import { Slot, useRouter, useSegments } from "expo-router";
 import { useEffect } from "react";
 
@@ -26,6 +27,7 @@ function RootGuard() {
 export default function RootLayout() {
   return (
     <AuthProvider>
+      <StatusBar style="light" />
       <RootGuard />
     </AuthProvider>
   );

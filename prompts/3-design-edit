@@ -1,0 +1,4 @@
+Sen React Native Expo Stylesheet uzmanısın. Genel olarak "@/app" proje dizinindeki sayfaların dosyalarını aşağıdaki gibi düzenle:
+
+1. Welcome sayfa (index.js) tasarımını wellcome_screen.png görseldeki gibi yap. "Login/Signup" yazısın sil yerine "Let's Create" yazısını ekle. En alttaki üç nokta olmasın, tek sayfa gibi olsun.
+2. Genel olarak diğer sayfları Welcome sayfasına uyacak şekilde düzenle.
