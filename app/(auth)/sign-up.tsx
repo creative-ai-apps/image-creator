@@ -1,16 +1,13 @@
-import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "expo-router";
 import { Button, StyleSheet, Text, View } from "react-native";
 
-export default function LoginScreen() {
+export default function SignUpScreen() {
     const router = useRouter();
-    const { login } = useAuth();
 
     return (
         <View style={styles.container}>
-            <Text>Login / Register Screen</Text>
-            <Button title="Login" onPress={login} />
-            <Button title="Back" onPress={() => router.back()} />
+            <Text style={styles.title}>Sign Up</Text>
+            <Button title="Back to Sign In" onPress={() => router.back()} />
         </View>
     );
 }
@@ -21,5 +18,10 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         gap: 12,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: "bold",
+        marginBottom: 20,
     },
 });

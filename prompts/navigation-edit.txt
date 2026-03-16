@@ -1,0 +1,11 @@
+Sen Expo Router Navigation uzmanısın. Genel olarak "@/app" proje dizinindeki navigation ayarlarını aşağıdaki gibi düzenle:
+1. Root (@/app) index dosyası welcome sayfası olsun. İki tane buton olsun.
+    - Lets Create : Tıklanıldığında "(main)/index" sayfasına gitsin.
+    - Explore : Tıklanıldığında "(guest)/index" sayfasına gitsin.
+2. (main) dizini sadece kullanıcı oturumu açık olduğunda erişilebilsin. Let's Create butonuna tıklanıp buraya gelen kullanıcı oturumu açık değilse signIn ((auth)/index) sayfasına yönlendirilsin.
+    - index dosyası generate sayfası olsun.
+    - library dizini olsun. içinde index dosyası library sayfası olsun. "image-detail" dizini ve "image-detail/[id].tsx" dosyası oluştur. Bu dosya image-detail sayfası olsun. Bu library dizininde layout dosyası olusun ve stack navigation yapısı olsun.
+    - explore dizini olsun. içinde index dosyası explore sayfası olsun. "image-detail" dizini ve "image-detail/[id].tsx" dosyası oluştur. Bu dosya image-detail sayfası olsun. Bu explore dizininde layout dosyası olusun ve stack navigation yapısı olsun.
+    - account dizini olsun. içinde index dosyası account sayfası olsun. "buy-credits.tsx" dosyası oluştur. Bu dosya buy-credits sayfası olsun. Bu account dizininde layout dosyası olusun ve stack navigation yapısı olsun.
+3. (auth) dizinine sadece kullanıcı oturumu kapalı olduğunda erişilebilsin. index dosyası signIn sayfası olmak üzere  signUp ve reset password sayfaları için sayfa dosyaların oluştur. 
+4. (guest) dizinine index dosyası Explore sayfası olsun. "image-detail" dizini ve "image-detail/[id].tsx" dosyası oluştur. Bu dosya image-detail sayfası olsun. Bu guest dizininde layout dosyası olusun ve stack navigation yapısı olsun.

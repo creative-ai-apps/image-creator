@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 export default function GenerateScreen() {
     return (
         <View style={styles.container}>
-            <Text>Image Generation Screen</Text>
+            <Text>Generate Screen</Text>
         </View>
     );
 }

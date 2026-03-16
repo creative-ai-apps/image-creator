@@ -6,7 +6,7 @@ export default function GuestExploreScreen() {
 
     return (
         <View style={styles.container}>
-            <Text>Guest Explore Screen</Text>
+            <Text style={styles.title}>Explore</Text>
             <Button title="Back" onPress={() => router.back()} />
         </View>
     );
@@ -18,5 +18,10 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         gap: 12,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: "bold",
+        marginBottom: 20,
     },
 });

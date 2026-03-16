@@ -13,9 +13,9 @@ function RootGuard() {
 
     if (isLoggedIn && inAuthGroup) {
       // Logged in but on auth screens → redirect to main app
-      router.replace("/(main)/generate");
+      router.replace("/(main)");
     } else if (!isLoggedIn && inMainGroup) {
-      // Not logged in but on main screens → redirect to welcome
+      // Not logged in but on main screens → redirect to sign in
       router.replace("/(auth)");
     }
   }, [isLoggedIn, segments]);
