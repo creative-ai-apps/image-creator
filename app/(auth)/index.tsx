@@ -1,22 +1,44 @@
-import { useAuth } from "@/context/AuthContext";
-import { colors, borderRadius, fontSize, spacing } from "@/constants/theme";
+import { borderRadius, colors, fontSize, spacing } from "@/constants/theme";
+import { useAuth } from "@/src/context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import {
+    ActivityIndicator,
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
     Pressable,
+    ScrollView,
     StyleSheet,
     Text,
     TextInput,
     View,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SignInScreen() {
     const router = useRouter();
-    const { login } = useAuth();
+    const { signIn } = useAuth();
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const handleSignIn = async () => {
+        if (!email || !password) {
+            Alert.alert("Error", "Please fill in all fields.");
+            return;
+        }
+
+        setLoading(true);
+        const { error } = await signIn(email, password);
+        setLoading(false);
+
+        if (error) {
+            Alert.alert("Sign In Failed", error);
+        }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -53,6 +75,8 @@ export default function SignInScreen() {
                                 placeholderTextColor={colors.textMuted}
                                 keyboardType="email-address"
                                 autoCapitalize="none"
+                                value={email}
+                                onChangeText={setEmail}
                             />
                         </View>
 
@@ -63,6 +87,8 @@ export default function SignInScreen() {
                                 placeholder="Password"
                                 placeholderTextColor={colors.textMuted}
                                 secureTextEntry
+                                value={password}
+                                onChangeText={setPassword}
                             />
                         </View>
 
@@ -75,9 +101,14 @@ export default function SignInScreen() {
                                 styles.buttonPrimary,
                                 pressed && styles.buttonPressed,
                             ]}
-                            onPress={login}
+                            onPress={handleSignIn}
+                            disabled={loading}
                         >
-                            <Text style={styles.buttonPrimaryText}>Sign In</Text>
+                            {loading ? (
+                                <ActivityIndicator color={colors.text} />
+                            ) : (
+                                <Text style={styles.buttonPrimaryText}>Sign In</Text>
+                            )}
                         </Pressable>
                     </View>
 

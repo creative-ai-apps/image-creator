@@ -1,13 +1,24 @@
-import { useAuth } from "@/context/AuthContext";
-import { colors, borderRadius, fontSize, spacing } from "@/constants/theme";
+import { borderRadius, colors, fontSize, spacing } from "@/constants/theme";
+import { useAuth } from "@/src/context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { Alert } from "react-native";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AccountScreen() {
     const router = useRouter();
-    const { logout } = useAuth();
+    const { signOut, session } = useAuth();
+
+    const userEmail = session?.user?.email ?? "user@example.com";
+    const userName = session?.user?.user_metadata?.full_name ?? "User";
+
+    const handleLogout = async () => {
+        const { error } = await signOut();
+        if (error) {
+            Alert.alert("Error", error);
+        }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -21,8 +32,8 @@ export default function AccountScreen() {
                 <View style={styles.avatar}>
                     <Ionicons name="person" size={40} color={colors.primaryLight} />
                 </View>
-                <Text style={styles.profileName}>User</Text>
-                <Text style={styles.profileEmail}>user@example.com</Text>
+                <Text style={styles.profileName}>{userName}</Text>
+                <Text style={styles.profileEmail}>{userEmail}</Text>
             </View>
 
             {/* Menu Items */}
@@ -48,7 +59,7 @@ export default function AccountScreen() {
                         styles.menuItem,
                         pressed && styles.menuItemPressed,
                     ]}
-                    onPress={logout}
+                    onPress={handleLogout}
                 >
                     <View style={styles.menuItemLeft}>
                         <View style={[styles.menuIcon, { backgroundColor: "rgba(239, 68, 68, 0.15)" }]}>

@@ -1,7 +1,11 @@
 import { colors, borderRadius, fontSize, spacing } from "@/constants/theme";
+import { useAuth } from "@/src/context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import {
+    ActivityIndicator,
+    Alert,
     Pressable,
     StyleSheet,
     Text,
@@ -15,6 +19,31 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ResetPasswordScreen() {
     const router = useRouter();
+    const { resetPassword } = useAuth();
+
+    const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const handleResetPassword = async () => {
+        if (!email) {
+            Alert.alert("Error", "Please enter your email address.");
+            return;
+        }
+
+        setLoading(true);
+        const { error } = await resetPassword(email);
+        setLoading(false);
+
+        if (error) {
+            Alert.alert("Error", error);
+        } else {
+            Alert.alert(
+                "Email Sent",
+                "If an account exists with this email, you will receive a password reset link.",
+                [{ text: "OK", onPress: () => router.back() }]
+            );
+        }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -53,6 +82,8 @@ export default function ResetPasswordScreen() {
                                 placeholderTextColor={colors.textMuted}
                                 keyboardType="email-address"
                                 autoCapitalize="none"
+                                value={email}
+                                onChangeText={setEmail}
                             />
                         </View>
 
@@ -61,8 +92,14 @@ export default function ResetPasswordScreen() {
                                 styles.buttonPrimary,
                                 pressed && styles.buttonPressed,
                             ]}
+                            onPress={handleResetPassword}
+                            disabled={loading}
                         >
-                            <Text style={styles.buttonPrimaryText}>Send Reset Link</Text>
+                            {loading ? (
+                                <ActivityIndicator color={colors.text} />
+                            ) : (
+                                <Text style={styles.buttonPrimaryText}>Send Reset Link</Text>
+                            )}
                         </Pressable>
                     </View>
 

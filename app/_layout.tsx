@@ -1,14 +1,17 @@
-import { AuthProvider, useAuth } from "@/context/AuthContext";
-import { StatusBar } from "expo-status-bar";
+import { AuthProvider, useAuth } from "@/src/context/AuthContext";
 import { Slot, useRouter, useSegments } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { ActivityIndicator, View } from "react-native";
 
 function RootGuard() {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, isLoading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
 
   useEffect(() => {
+    if (isLoading) return;
+
     const inAuthGroup = segments[0] === "(auth)";
     const inMainGroup = segments[0] === "(main)";
 
@@ -19,7 +22,15 @@ function RootGuard() {
       // Not logged in but on main screens → redirect to sign in
       router.replace("/(auth)");
     }
-  }, [isLoggedIn, segments]);
+  }, [isLoggedIn, isLoading, segments]);
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#0A0A0F" }}>
+        <ActivityIndicator size="large" color="#A855F7" />
+      </View>
+    );
+  }
 
   return <Slot />;
 }

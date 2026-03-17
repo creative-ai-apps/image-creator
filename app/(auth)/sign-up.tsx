@@ -1,7 +1,11 @@
 import { colors, borderRadius, fontSize, spacing } from "@/constants/theme";
+import { useAuth } from "@/src/context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import {
+    ActivityIndicator,
+    Alert,
     Pressable,
     StyleSheet,
     Text,
@@ -15,6 +19,44 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SignUpScreen() {
     const router = useRouter();
+    const { signUp } = useAuth();
+
+    const [fullName, setFullName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const handleSignUp = async () => {
+        if (!fullName || !email || !password || !confirmPassword) {
+            Alert.alert("Error", "Please fill in all fields.");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            Alert.alert("Error", "Passwords do not match.");
+            return;
+        }
+
+        if (password.length < 6) {
+            Alert.alert("Error", "Password must be at least 6 characters.");
+            return;
+        }
+
+        setLoading(true);
+        const { error } = await signUp(email, password, fullName);
+        setLoading(false);
+
+        if (error) {
+            Alert.alert("Sign Up Failed", error);
+        } else {
+            Alert.alert(
+                "Account Created",
+                "Please check your email to verify your account, then sign in.",
+                [{ text: "OK", onPress: () => router.back() }]
+            );
+        }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -50,6 +92,8 @@ export default function SignUpScreen() {
                                 placeholder="Full Name"
                                 placeholderTextColor={colors.textMuted}
                                 autoCapitalize="words"
+                                value={fullName}
+                                onChangeText={setFullName}
                             />
                         </View>
 
@@ -61,6 +105,8 @@ export default function SignUpScreen() {
                                 placeholderTextColor={colors.textMuted}
                                 keyboardType="email-address"
                                 autoCapitalize="none"
+                                value={email}
+                                onChangeText={setEmail}
                             />
                         </View>
 
@@ -71,6 +117,8 @@ export default function SignUpScreen() {
                                 placeholder="Password"
                                 placeholderTextColor={colors.textMuted}
                                 secureTextEntry
+                                value={password}
+                                onChangeText={setPassword}
                             />
                         </View>
 
@@ -81,6 +129,8 @@ export default function SignUpScreen() {
                                 placeholder="Confirm Password"
                                 placeholderTextColor={colors.textMuted}
                                 secureTextEntry
+                                value={confirmPassword}
+                                onChangeText={setConfirmPassword}
                             />
                         </View>
 
@@ -89,8 +139,14 @@ export default function SignUpScreen() {
                                 styles.buttonPrimary,
                                 pressed && styles.buttonPressed,
                             ]}
+                            onPress={handleSignUp}
+                            disabled={loading}
                         >
-                            <Text style={styles.buttonPrimaryText}>Sign Up</Text>
+                            {loading ? (
+                                <ActivityIndicator color={colors.text} />
+                            ) : (
+                                <Text style={styles.buttonPrimaryText}>Sign Up</Text>
+                            )}
                         </Pressable>
                     </View>
 
