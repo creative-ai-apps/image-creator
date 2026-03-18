@@ -1,0 +1,11 @@
+Sen React Native Expo ve Supabase Uzmanısın. Projenin genel yapısını ve kodlarını incele ve Library sayfasını aşağıdaki istenenlere göre düzenle.
+
+1. "generateimagest" tablosundaki satırların user_id değeri mevcut kullanıcının id'siyle eşit olan görselleri her satırda 3 tane olacak şekilde alt alta göster.
+2. Hergangi bir görselin üzerinde tıklanıldığında Image Detail sayfasına yönlendirilsin ve mevcut görsel ile ilgili detayları göster. Görsel dahil
+
+
+
+Sen React Native Expo ve Supabase Uzmanısın. Projenin genel yapısını ve kodlarını incele ve Main explore sayfasını aşağıdaki istenenlere göre düzenle.
+
+1. Supabase database deki "generateimagest" tablosundaki satırların publicstate değeri "true" olan görselleri her satırda 3 tane olacak şekilde alt alta göster.
+2. Hergangi bir görselin üzerinde tıklanıldığında Image Detail sayfasına yönlendirilsin ve mevcut görsel ile ilgili detayları göster. Görsel dahil.

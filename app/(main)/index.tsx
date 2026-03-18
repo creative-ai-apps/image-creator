@@ -1,5 +1,7 @@
 import { colors, fontSize, spacing, borderRadius } from "@/constants/theme";
 import { requestImageGeneration } from "@/src/utils/runware";
+import { supabase } from "@/src/utils/supabase";
+import { useAuth } from "@/src/context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -13,6 +15,7 @@ import {
     Text,
     TextInput,
     View,
+    Switch,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -30,12 +33,15 @@ const CFG_MIN = 1;
 const CFG_MAX = 20;
 
 export default function GenerateScreen() {
+    const { session } = useAuth();
+    const userId = session?.user?.id;
     const [prompt, setPrompt] = useState("");
     const [negativePrompt, setNegativePrompt] = useState("");
     const [showNegativePrompt, setShowNegativePrompt] = useState(false);
     const [selectedDimIndex, setSelectedDimIndex] = useState(0);
     const [steps, setSteps] = useState(30);
     const [cfgScale, setCfgScale] = useState(7);
+    const [isPublic, setIsPublic] = useState(false);
     const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
     const [isGenerating, setIsGenerating] = useState(false);
 
@@ -47,9 +53,41 @@ export default function GenerateScreen() {
             Alert.alert("Prompt Required", "Please enter a prompt to generate an image.");
             return;
         }
+        
+        if (!userId) {
+            Alert.alert("Authentication Required", "Please log in to generate images.");
+            return;
+        }
 
         setIsGenerating(true);
         setGeneratedImageUrl(null);
+
+        // 1. Check user credits
+        try {
+            const { data: creditData, error: creditError } = await supabase
+                .from('user_credits')
+                .select('credit')
+                .eq('user_id', userId)
+                .single();
+
+            if (creditError) {
+                console.error("Credit fetch error:", creditError);
+                throw new Error("Could not verify user credits.");
+            }
+
+            const currentCredits = creditData?.credit || 0;
+            const COST = 10;
+
+            if (currentCredits < COST) {
+                Alert.alert("Insufficient Credits", "You do not have enough credits to generate an image.");
+                setIsGenerating(false);
+                return;
+            }
+        } catch (error: any) {
+            Alert.alert("Error", error.message || "Failed to check credits.");
+            setIsGenerating(false);
+            return;
+        }
 
         try {
             const images = await requestImageGeneration({
@@ -64,7 +102,67 @@ export default function GenerateScreen() {
             });
 
             if (images && images.length > 0 && images[0].imageURL) {
-                setGeneratedImageUrl(images[0].imageURL);
+                const runwareUrl = images[0].imageURL;
+                
+                try {
+                    // Fetch the generated image
+                    const response = await fetch(runwareUrl);
+                    const arrayBuffer = await response.arrayBuffer();
+                    
+                    const fileName = `${Date.now()}_generated.jpg`;
+                    
+                    // Upload to Storage without complex metadata (since React Native sometimes drops these headers)
+                    const { data: uploadData, error: uploadError } = await supabase.storage
+                        .from('generateimagesb')
+                        .upload(fileName, arrayBuffer, {
+                            contentType: 'image/jpeg',
+                            cacheControl: '3600',
+                            upsert: false,
+                        });
+                        
+                    if (uploadError) {
+                        console.error('Upload Error:', uploadError);
+                        setGeneratedImageUrl(runwareUrl);
+                    } else {
+                        // Insert the metadata directly into the database
+                        const { error: dbError } = await supabase
+                            .from('generateimagest')
+                            .insert({
+                                user_id: userId,
+                                image_path: fileName,
+                                cost: 10,
+                                aspect_ratio: selectedDim.label,
+                                resolution: `${selectedDim.width}x${selectedDim.height}`,
+                                model: "StableDiffusion",
+                                publicstate: isPublic,
+                                prompt: trimmed
+                            });
+
+                        if (dbError) {
+                            console.error('DB Insert Error:', dbError);
+                        }
+
+                        if (isPublic) {
+                            const { data: publicUrlData } = supabase.storage
+                                .from('generateimagesb')
+                                .getPublicUrl(fileName);
+                            setGeneratedImageUrl(publicUrlData.publicUrl);
+                        } else {
+                            const { data: signedData, error: signedError } = await supabase.storage
+                                .from('generateimagesb')
+                                .createSignedUrl(fileName, 3600);
+                            
+                            if (signedData?.signedUrl) {
+                                setGeneratedImageUrl(signedData.signedUrl);
+                            } else {
+                                setGeneratedImageUrl(runwareUrl);
+                            }
+                        }
+                    }
+                } catch (storageError) {
+                    console.error('Storage operation failed:', storageError);
+                    setGeneratedImageUrl(runwareUrl);
+                }
             }
         } catch (error: any) {
             Alert.alert(
@@ -74,7 +172,7 @@ export default function GenerateScreen() {
         } finally {
             setIsGenerating(false);
         }
-    }, [prompt, negativePrompt, selectedDim, steps, cfgScale]);
+    }, [prompt, negativePrompt, selectedDim, steps, cfgScale, isPublic, userId]);
 
     const adjustValue = (
         current: number,
@@ -209,6 +307,20 @@ export default function GenerateScreen() {
                         <Text style={styles.sliderLabelText}>Faster</Text>
                         <Text style={styles.sliderLabelText}>Higher Quality</Text>
                     </View>
+                </View>
+
+                {/* Public Toggle */}
+                <View style={[styles.section, styles.switchRow]}>
+                    <View>
+                        <Text style={styles.sectionLabel}>Public</Text>
+                        <Text style={styles.sliderLabelText}>Allow others to see this image</Text>
+                    </View>
+                    <Switch
+                        value={isPublic}
+                        onValueChange={setIsPublic}
+                        trackColor={{ false: colors.surface, true: colors.primary }}
+                        thumbColor={colors.text}
+                    />
                 </View>
 
                 {/* CFG Scale Control */}
@@ -465,6 +577,11 @@ const styles = StyleSheet.create({
     sliderLabelText: {
         fontSize: fontSize.xs,
         color: colors.textMuted,
+    },
+    switchRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
     },
 
     /* Generate Button */

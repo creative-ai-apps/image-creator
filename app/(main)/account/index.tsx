@@ -2,9 +2,11 @@ import { borderRadius, colors, fontSize, spacing } from "@/constants/theme";
 import { useAuth } from "@/src/context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Alert } from "react-native";
+import { useEffect, useState } from "react";
+import { Alert, ActivityIndicator } from "react-native";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { supabase } from "@/src/utils/supabase";
 
 export default function AccountScreen() {
     const router = useRouter();
@@ -12,6 +14,31 @@ export default function AccountScreen() {
 
     const userEmail = session?.user?.email ?? "user@example.com";
     const userName = session?.user?.user_metadata?.full_name ?? "User";
+    const [credits, setCredits] = useState<number | null>(null);
+    const [loadingCredits, setLoadingCredits] = useState(true);
+
+    useEffect(() => {
+        const fetchCredits = async () => {
+            if (!session?.user?.id) return;
+            
+            try {
+                const { data, error } = await supabase
+                    .from('user_credits')
+                    .select('credit')
+                    .eq('user_id', session.user.id)
+                    .single();
+                    
+                if (error) throw error;
+                if (data) setCredits(data.credit);
+            } catch (error) {
+                console.error('Error fetching credits:', error);
+            } finally {
+                setLoadingCredits(false);
+            }
+        };
+
+        fetchCredits();
+    }, [session?.user?.id]);
 
     const handleLogout = async () => {
         const { error } = await signOut();
@@ -34,6 +61,14 @@ export default function AccountScreen() {
                 </View>
                 <Text style={styles.profileName}>{userName}</Text>
                 <Text style={styles.profileEmail}>{userEmail}</Text>
+                <View style={styles.creditsContainer}>
+                    <Ionicons name="diamond" size={16} color={colors.primary} />
+                    {loadingCredits ? (
+                        <ActivityIndicator size="small" color={colors.primary} style={{ marginLeft: spacing.xs }} />
+                    ) : (
+                        <Text style={styles.creditsText}>{credits ?? 0} Credits</Text>
+                    )}
+                </View>
             </View>
 
             {/* Menu Items */}
@@ -112,6 +147,21 @@ const styles = StyleSheet.create({
     profileEmail: {
         fontSize: fontSize.sm,
         color: colors.textSecondary,
+    },
+    creditsContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "rgba(168, 85, 247, 0.1)",
+        paddingHorizontal: spacing.md,
+        paddingVertical: spacing.xs,
+        borderRadius: borderRadius.full,
+        marginTop: spacing.sm,
+    },
+    creditsText: {
+        fontSize: fontSize.md,
+        fontWeight: "600",
+        color: colors.primary,
+        marginLeft: spacing.xs,
     },
     menuSection: {
         paddingHorizontal: spacing.lg,

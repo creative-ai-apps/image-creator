@@ -21,20 +21,13 @@ export default function SignUpScreen() {
     const router = useRouter();
     const { signUp } = useAuth();
 
-    const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleSignUp = async () => {
-        if (!fullName || !email || !password || !confirmPassword) {
+        if (!email || !password) {
             Alert.alert("Error", "Please fill in all fields.");
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            Alert.alert("Error", "Passwords do not match.");
             return;
         }
 
@@ -44,7 +37,7 @@ export default function SignUpScreen() {
         }
 
         setLoading(true);
-        const { error } = await signUp(email, password, fullName);
+        const { error } = await signUp(email, password, "");
         setLoading(false);
 
         if (error) {
@@ -86,18 +79,6 @@ export default function SignUpScreen() {
                     {/* Form */}
                     <View style={styles.form}>
                         <View style={styles.inputContainer}>
-                            <Ionicons name="person-outline" size={20} color={colors.textMuted} style={styles.inputIcon} />
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Full Name"
-                                placeholderTextColor={colors.textMuted}
-                                autoCapitalize="words"
-                                value={fullName}
-                                onChangeText={setFullName}
-                            />
-                        </View>
-
-                        <View style={styles.inputContainer}>
                             <Ionicons name="mail-outline" size={20} color={colors.textMuted} style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
@@ -119,18 +100,6 @@ export default function SignUpScreen() {
                                 secureTextEntry
                                 value={password}
                                 onChangeText={setPassword}
-                            />
-                        </View>
-
-                        <View style={styles.inputContainer}>
-                            <Ionicons name="lock-closed-outline" size={20} color={colors.textMuted} style={styles.inputIcon} />
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Confirm Password"
-                                placeholderTextColor={colors.textMuted}
-                                secureTextEntry
-                                value={confirmPassword}
-                                onChangeText={setConfirmPassword}
                             />
                         </View>
 

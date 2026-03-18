@@ -1,0 +1,18 @@
+Sen React Native Expo ve Supabase Uzmanısın. Projenin genel yapısını ve kodlarını incele ve aşağıdaki istenecekleri yap.
+
+1. Generate sayfasında @i Generate butonuna basıldığında sırasıyla aşağıdaki gibi olsun.
+    1.1. Mevcut kullanıcının yeterli kredisi (public.user_credits) varsa görsel oluşturma isteği gönderilsin
+    1.2. Yeterli kredi yoksa kullanıcıya uyarı mesajı gösterilsin
+    1.3. Görsel oluşturma isteği gönderildikten sonra kullanıcıya görsel oluşturuluyor mesajı gösterilsin
+    1.4. Görsel oluşturma isteğine response olarak bir görsel bağlantı linki gelecek. Bu linki kullanarak görseli "GeneratedImages" Supabase Bucket'a aşağıdaki meta veriler ile yükle
+        {
+  "user_id": "UUID_OF_USER",
+  "cost": 10,
+  "aspect_ratio": "16:9",
+  "resolution": "1024x1024",
+  "model": "StableDiffusion",
+  "public": true
+}
+
+
+2. @4-image-creation-and-storage-code.txt dosyasında kodları detaylı şekilde incele ona göre kodla.

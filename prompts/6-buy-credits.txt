@@ -1,0 +1,7 @@
+Sen React Native Expo ve Supabase Uzmanısın. Projenin genel yapısını ve kodlarını incele ve Buy Credits sayfasını @ aşağıdaki istenenlere göre düzenle.
+
+1. Mevcut kredi miktarını göster
+2. Kredi satın alma paketlerini göster. Paketler : 1000 kredi için 10 TL, 5000 kredi için 50 TL, 10000 kredi için 100 TL
+3. Herhangi bir pakete tıklandığında pop up ile satın alma işlemi gerçekleştirilsin.
+4. Satın alınan kredi sayısı ve toplam tutar bilgisi gösterilsin.
+5. Satın alma işlemi gerçekleştirildikten sonra mevcut kredi miktarı güncellenir.
